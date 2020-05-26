@@ -71,6 +71,40 @@ public function chuyendoidonmau(){
 	include("views/layouts/donthuoc/chuyendoidonmau.php");
 }
 
+public function khothuoc(){
+
+	if(isset($_GET['type']) && ($_GET['type']=='little'))
+	{
+		$type="little";
+	}else{
+		$type="new";
+	}
+	$count = 6;
+
+	if(isset($_GET['page'])){
+		$page = $_GET['page'];
+	}else{
+		$page = 1;
+	}
+	$data  = parent::md_selectkhothuoc($type,($page-1)*$count,$count);
+	$countall  = parent::md_countallkhothuoc($type);
+	include("views/layouts/quanly/header.php");
+	include("views/layouts/donthuoc/khothuoc.php");
+}
+
+public function themsoluongthuoc(){
+	if(isset($_POST)){
+		parent::md_themsoluongthuoc($_POST['id'], $_POST['count']);
+	}
+}
+
+public function addthuoc(){
+	print_r($_POST);
+	parent::md_addthuoc($_POST['name'], $_POST['donvitinh'], $_POST['giacuoi'], $_POST['gianhap'], $_POST['cachdung'], $_POST['count']);
+
+	header('location:khothuoc');
+}
+
 }
 
  ?>
