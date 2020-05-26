@@ -32,6 +32,9 @@ public function md_adddonthuoc($name, $ghichu, $taikham, $id_benhnhan, $id_nhanv
 			$sql =" INSERT INTO thuoc_donkham (id, id_donkham, id_thuoc, soluong, dongia) VALUES (NULL, (SELECT A.id FROM donkham A WHERE A.id_benhnhan = '".$id_benhnhan."' AND A.ngaykedon = '".$date."'), '".$value."', '".$count[$value]."', (SELECT B.giacuoi FROM dichvucon B WHERE B.id = '".$value."'));";
 
 			parent::query($sql);
+
+			$sql = "UPDATE dichvucon SET soluong = (SELECT soluong FROM dichvucon WHERE id='".$value."')-'".$count[$value]."' WHERE id='".$value."'"; 
+			parent::query($sql);
 		}
 
 		$sql = "UPDATE donkham SET 
@@ -87,6 +90,42 @@ public function md_chuyendoidonmau($id){
 	$sql = "SELECT A.id, A.id_thuoc, A.soluong, B.name as tenthuoc, B.donvitinh FROM thuoc_donkham A inner join dichvucon B on A.id_thuoc = B.id WHERE id_donkham='".$id."'";
 	parent::query($sql);
 		return parent::selectall_cf();
+}
+
+
+public function md_selectkhothuoc($type,$page, $count){
+	$this->conn= parent::connect();
+	if($type=='little'){
+		$sql = "SELECT * FROM dichvucon WHERE id_dichvu = '3' AND soluong <= 10 ORDER BY id DESC LIMIT $page, $count";
+	}else{
+		$sql = "SELECT * FROM dichvucon WHERE id_dichvu = '3' ORDER BY id DESC LIMIT $page, $count";
+	}
+	parent::query($sql);
+		return parent::selectall_cf();
+}
+public function md_countallkhothuoc($type){
+	$this->conn= parent::connect();
+	if($type=='little'){
+		$sql = "SELECT * FROM dichvucon WHERE id_dichvu = '3' AND soluong <= 10 ORDER BY id DESC";
+	}else{
+		$sql = "SELECT * FROM dichvucon WHERE id_dichvu = '3' ORDER BY id DESC";
+	}
+		parent::query($sql);
+		parent::selectall_cf();
+		return parent::numrow();
+}
+
+public function md_themsoluongthuoc($id, $count){
+	$this->conn= parent::connect();
+	$sql = "UPDATE dichvucon SET soluong = '".$count."' WHERE id = '".$id."'";
+	return parent::query($sql);
+		
+}
+
+public function md_addthuoc($name, $donvitinh, $giacuoi, $gianhap, $cachdung, $soluong){
+	$this->conn= parent::connect();
+	$sql = "INSERT INTO dichvucon (id, id_dichvu, name, donvitinh, giacuoi, gianhap, cachdung, soluong) VALUES (NULL, '3', '".$name."', '".$donvitinh."', '".$giacuoi."', '".$gianhap."', '".$cachdung."', '".$soluong."');";
+	return parent::query($sql);
 }
 
 
